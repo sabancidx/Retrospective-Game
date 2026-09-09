@@ -16,7 +16,7 @@ This runbook prepares the repository for Azure and documents the deployment work
 | Saklambaç | `games/hide-and-seek` | Azure Static Web Apps | `stapp-retro-game-hide-dev-001` |
 | Çarkı Felek | `games/wheel-of-fortune` | Azure Static Web Apps | `stapp-retro-game-wheel-dev-001` |
 | Realtime backend | `services/retrospective-server` | Azure App Service, ASP.NET Core | `app-retro-game-api-dev-001` |
-| AI Bot | `ai-bot` | Azure App Service, Node.js | `app-retro-game-bot-dev-001` — not created yet |
+| AI Bot | `ai-bot` | Azure App Service, Node.js | `app-retro-game-bot-dev-001` |
 | Optional realtime fan-out | backend integration | Azure SignalR Service | `<SIGNALR_RESOURCE>` |
 
 Place all resources in `rg-innovation-dev`, on a dedicated App Service Plan named `plan-retro-game-dev-001`. `services/retro-platform-api` is a legacy service and is not part of this target architecture.
@@ -27,7 +27,7 @@ The two App Services (backend and Spin) go on their own App Service Plan, not on
 
 Do not co-locate these on a plan that is already near its memory ceiling. An App Service Plan shares one VM's CPU and RAM across every site on it, and on Linux a plan that exhausts memory restarts containers — which for this application means silently destroying every active room. Measure `MemoryPercentage` and `CpuPercentage` on a candidate plan over at least 24 hours before reusing it.
 
-Budget from measurement, not from process size. On a dedicated B1 (1 vCPU, 1.75 GB) these two sites alone measured about 80 percent memory with no users connected, because the Linux container hosts and the SCM sidecar cost far more than the application processes do. B1 therefore has little headroom left for concurrent rooms, and B2 is the safer size for anything beyond demonstration use.
+Budget from measurement, not from process size. On a dedicated B1 (1 vCPU, 1.75 GB) the backend and Spin alone measured about 80 percent memory with no users connected, because the Linux container hosts and the SCM sidecar cost far more than the application processes do. That left no room for the AI Bot, so this plan runs B2 (2 vCPU, 3.5 GB): all three App Services together measure about 63 percent memory idle. Deployments briefly drive CPU above 90 percent while Oryx installs packages.
 
 Basic tier has no deployment slots, so every deploy is a restart and drops active rooms. Standard or higher is required for a warm swap.
 
