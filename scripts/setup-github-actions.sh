@@ -22,6 +22,9 @@ RETRO_RUSH_URL="https://ambitious-tree-04c30af03.7.azurestaticapps.net"
 RUS_RULETI_URL="https://brave-mushroom-02a211703.7.azurestaticapps.net"
 DRAW_AND_GUESS_URL="https://kind-sky-008489b03.7.azurestaticapps.net"
 IMPOSTER_URL="https://zealous-meadow-0dc053a03.7.azurestaticapps.net"
+TANK_BATTLE_URL="https://green-stone-08da75703.6.azurestaticapps.net"
+HIDE_AND_SEEK_URL="https://white-wave-008f57d03.5.azurestaticapps.net"
+WHEEL_OF_FORTUNE_URL="https://nice-desert-0013ac903.6.azurestaticapps.net"
 
 command -v gh >/dev/null || { echo "gh CLI is required. See https://cli.github.com"; exit 1; }
 command -v az >/dev/null || { echo "az CLI is required."; exit 1; }
@@ -43,6 +46,9 @@ PUBLIC_SPIN_URL $SPIN_URL
 PUBLIC_RUS_RULETI_URL $RUS_RULETI_URL
 PUBLIC_DRAW_AND_GUESS_URL $DRAW_AND_GUESS_URL
 PUBLIC_IMPOSTER_URL $IMPOSTER_URL
+PUBLIC_TANK_BATTLE_URL $TANK_BATTLE_URL
+PUBLIC_HIDE_AND_SEEK_URL $HIDE_AND_SEEK_URL
+PUBLIC_WHEEL_OF_FORTUNE_URL $WHEEL_OF_FORTUNE_URL
 EOF
 
 echo "Setting Azure identity secrets..."
@@ -71,6 +77,9 @@ AZURE_SWA_TOKEN_RETRO_RUSH stapp-retro-game-rush-dev-001
 AZURE_SWA_TOKEN_RUS_RULETI stapp-retro-game-rus-ruleti-dev-001
 AZURE_SWA_TOKEN_DRAW_AND_GUESS stapp-retro-game-draw-dev-001
 AZURE_SWA_TOKEN_IMPOSTER stapp-retro-game-imposter-dev-001
+AZURE_SWA_TOKEN_TANK_BATTLE stapp-retro-game-tank-dev-001
+AZURE_SWA_TOKEN_HIDE_AND_SEEK stapp-retro-game-hide-dev-001
+AZURE_SWA_TOKEN_WHEEL_OF_FORTUNE stapp-retro-game-wheel-dev-001
 EOF
 
 echo "Done. Verify with: gh variable list --repo $REPO && gh secret list --repo $REPO --env $ENVIRONMENT"

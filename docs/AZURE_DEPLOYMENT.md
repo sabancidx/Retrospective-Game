@@ -12,7 +12,9 @@ This runbook prepares the repository for Azure and documents the deployment work
 | Rus Ruleti | `games/rus-ruleti` | Azure Static Web Apps | `stapp-retro-game-rus-ruleti-dev-001` |
 | Draw and Guess | `games/draw-and-guess` | Azure Static Web Apps | `stapp-retro-game-draw-dev-001` |
 | Imposter | `games/imposter` | Azure Static Web Apps | `stapp-retro-game-imposter-dev-001` |
-| Çarkı Felek | `games/wheel-of-fortune` | Azure Static Web Apps | `<WHEEL_OF_FORTUNE_SWA>` — not created yet |
+| Tank Battle | `games/tank-battle` | Azure Static Web Apps | `stapp-retro-game-tank-dev-001` |
+| Saklambaç | `games/hide-and-seek` | Azure Static Web Apps | `stapp-retro-game-hide-dev-001` |
+| Çarkı Felek | `games/wheel-of-fortune` | Azure Static Web Apps | `stapp-retro-game-wheel-dev-001` |
 | Realtime backend | `services/retrospective-server` | Azure App Service, ASP.NET Core | `app-retro-game-api-dev-001` |
 | AI Bot | `ai-bot` | Azure App Service, Node.js | `app-retro-game-bot-dev-001` — not created yet |
 | Optional realtime fan-out | backend integration | Azure SignalR Service | `<SIGNALR_RESOURCE>` |
@@ -37,12 +39,14 @@ All `VITE_*` values are public build-time browser configuration. Never place key
 
 | Variable | Used by | Local example | Production purpose | Secret? |
 |---|---|---|---|---|
-| `VITE_API_URL` | Platform and all five games | `http://localhost:5281` | `https://<api-host>`; base for REST and `/hubs/room` | No |
+| `VITE_API_URL` | Platform and all eight games | `http://localhost:5281` | `https://<api-host>`; base for REST and `/hubs/room` | No |
 | `VITE_RETRO_RUSH_URL` | Platform | `http://localhost:5174` | `https://<retro-rush-host>` | No |
 | `VITE_SPIN_THE_BOTTLE_URL` | Platform | `http://localhost:5175` | `https://<spin-host>` | No |
 | `VITE_RUS_RULETI_URL` | Platform | `http://localhost:5176` | `https://<rus-ruleti-host>` | No |
 | `VITE_DRAW_AND_GUESS_URL` | Platform | `http://localhost:5177` | `https://<draw-and-guess-host>` | No |
 | `VITE_IMPOSTER_URL` | Platform | `http://localhost:5178` | `https://<imposter-host>` | No |
+| `VITE_TANK_BATTLE_URL` | Platform | `http://localhost:5179` | `https://<tank-battle-host>` | No |
+| `VITE_HIDE_AND_SEEK_URL` | Platform | `http://localhost:5180` | `https://<hide-and-seek-host>` | No |
 | `VITE_WHEEL_OF_FORTUNE_URL` | Platform | `http://localhost:5181` | `https://<wheel-of-fortune-host>` | No |
 | `VITE_PLATFORM_URL` | Every game | `http://localhost:5173` | `https://<platform-host>` for Back to Games | No |
 | `VITE_ROOM_SERVICE` | Platform | `real` | Keep `real`; `mock` is isolated UI development only | No |
@@ -53,6 +57,9 @@ All `VITE_*` values are public build-time browser configuration. Never place key
 | `AllowedOrigins__3` | Backend | `http://localhost:5176` from Development JSON | Exact `https://<rus-ruleti-host>` | No |
 | `AllowedOrigins__4` | Backend | `http://localhost:5177` from Development JSON | Exact `https://<draw-and-guess-host>` | No |
 | `AllowedOrigins__5` | Backend | `http://localhost:5178` from Development JSON | Exact `https://<imposter-host>` | No |
+| `AllowedOrigins__6` | Backend | `http://localhost:5179` from Development JSON | Exact `https://<tank-battle-host>` | No |
+| `AllowedOrigins__7` | Backend | `http://localhost:5180` from Development JSON | Exact `https://<hide-and-seek-host>` | No |
+| `AllowedOrigins__8` | Backend | `http://localhost:5181` from Development JSON | Exact `https://<wheel-of-fortune-host>` | No |
 | `ASPNETCORE_ENVIRONMENT` | Backend | `Development` from launch profile | `Production` | No |
 | `ASPNETCORE_FORWARDEDHEADERS_ENABLED` | Backend | not needed | `true` on Linux App Service so forwarded HTTPS is observed | No |
 | `Azure__SignalR__ConnectionString` | Backend, optional later | unset | Azure SignalR SDK configuration after optional integration | Yes |
@@ -85,6 +92,8 @@ npm run build:all
 | Rus Ruleti SWA | `/` | `npm run build:rus-ruleti` | `games/rus-ruleti/dist` |
 | Draw and Guess SWA | `/` | `npm run build:draw-and-guess` | `games/draw-and-guess/dist` |
 | Imposter SWA | `/` | `npm run build:imposter` | `games/imposter/dist` |
+| Tank Battle SWA | `/` | `npm run build:tank-battle` | `games/tank-battle/dist` |
+| Saklambaç SWA | `/` | `npm run build:hide-and-seek` | `games/hide-and-seek/dist` |
 | Çarkı Felek SWA | `/` | `npm run build:wheel-of-fortune` | `games/wheel-of-fortune/dist` |
 | Spin App Service | `/` | `npm run build:spin-the-bottle && npm run package:spin-the-bottle` | `artifacts/spin-the-bottle` (`dist/` plus a generated `package.json`) |
 | Backend App Service | `/` | `dotnet publish services/retrospective-server -c Release -o <PUBLISH_DIR>` | `<PUBLISH_DIR>` |
@@ -143,7 +152,7 @@ Three `deploy-*.yml` workflows perform the actual deployments. All three are `wo
 |---|---|---|
 | `deploy-backend.yml` | `app-retro-game-api-dev-001` | Runs the .NET tests, asserts `numberOfWorkers` is 1 before publishing, then polls `/health` until it returns 200. |
 | `deploy-spin.yml` | `app-retro-game-spin-dev-001` | Builds, runs `package:spin-the-bottle`, deploys the generated package with `npm start` as the startup command, then polls `/`. |
-| `deploy-statics.yml` | the five Static Web Apps | A `target` input deploys one frontend or `all`. `fail-fast` is off so one failure does not cancel the rest. |
+| ``deploy-statics.yml` | the eight Static Web Apps | A `target` input deploys one frontend or `all`. `fail-fast` is off so one failure does not cancel the rest. |
 
 Define these non-secret repository/environment variables. `deploy-statics.yml` requires all seven for every target, because three games substitute localhost rather than failing when one is absent:
 

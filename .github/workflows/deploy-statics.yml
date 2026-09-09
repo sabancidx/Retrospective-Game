@@ -17,6 +17,9 @@ on:
           - rus-ruleti
           - draw-and-guess
           - imposter
+          - tank-battle
+          - hide-and-seek
+          - wheel-of-fortune
 
 permissions:
   contents: read
@@ -50,6 +53,18 @@ jobs:
             build: build:imposter
             output: games/imposter/dist
             token_secret: AZURE_SWA_TOKEN_IMPOSTER
+          - key: tank-battle
+            build: build:tank-battle
+            output: games/tank-battle/dist
+            token_secret: AZURE_SWA_TOKEN_TANK_BATTLE
+          - key: hide-and-seek
+            build: build:hide-and-seek
+            output: games/hide-and-seek/dist
+            token_secret: AZURE_SWA_TOKEN_HIDE_AND_SEEK
+          - key: wheel-of-fortune
+            build: build:wheel-of-fortune
+            output: games/wheel-of-fortune/dist
+            token_secret: AZURE_SWA_TOKEN_WHEEL_OF_FORTUNE
     steps:
       - uses: actions/checkout@v6
         if: inputs.target == 'all' || inputs.target == matrix.key
@@ -72,10 +87,15 @@ jobs:
           VITE_RUS_RULETI_URL: ${{ vars.PUBLIC_RUS_RULETI_URL }}
           VITE_DRAW_AND_GUESS_URL: ${{ vars.PUBLIC_DRAW_AND_GUESS_URL }}
           VITE_IMPOSTER_URL: ${{ vars.PUBLIC_IMPOSTER_URL }}
+          VITE_TANK_BATTLE_URL: ${{ vars.PUBLIC_TANK_BATTLE_URL }}
+          VITE_HIDE_AND_SEEK_URL: ${{ vars.PUBLIC_HIDE_AND_SEEK_URL }}
+          VITE_WHEEL_OF_FORTUNE_URL: ${{ vars.PUBLIC_WHEEL_OF_FORTUNE_URL }}
         run: |
           for name in VITE_API_URL VITE_PLATFORM_URL VITE_RETRO_RUSH_URL \
                       VITE_SPIN_THE_BOTTLE_URL VITE_RUS_RULETI_URL \
-                      VITE_DRAW_AND_GUESS_URL VITE_IMPOSTER_URL; do
+                      VITE_DRAW_AND_GUESS_URL VITE_IMPOSTER_URL \
+                      VITE_TANK_BATTLE_URL VITE_HIDE_AND_SEEK_URL \
+                      VITE_WHEEL_OF_FORTUNE_URL; do
             test -n "${!name}" || { echo "Missing repository variable for $name"; exit 1; }
           done
 
@@ -93,6 +113,9 @@ jobs:
           VITE_RUS_RULETI_URL: ${{ vars.PUBLIC_RUS_RULETI_URL }}
           VITE_DRAW_AND_GUESS_URL: ${{ vars.PUBLIC_DRAW_AND_GUESS_URL }}
           VITE_IMPOSTER_URL: ${{ vars.PUBLIC_IMPOSTER_URL }}
+          VITE_TANK_BATTLE_URL: ${{ vars.PUBLIC_TANK_BATTLE_URL }}
+          VITE_HIDE_AND_SEEK_URL: ${{ vars.PUBLIC_HIDE_AND_SEEK_URL }}
+          VITE_WHEEL_OF_FORTUNE_URL: ${{ vars.PUBLIC_WHEEL_OF_FORTUNE_URL }}
           VITE_ROOM_SERVICE: real
           VITE_TRANSPORT_MODE: signalr
         run: npm run ${{ matrix.build }}
